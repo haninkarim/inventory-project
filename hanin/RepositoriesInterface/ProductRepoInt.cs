@@ -9,6 +9,8 @@ namespace hanin.RepositoriesInterface
         Task AddAsync(ProductEntity entity);
         Task UpdateAsync(ProductEntity entity);
         Task DeleteAsync(int id);
+        Task<ProductEntity> GetByIdAsync(int id);
+        Task<ProductEntity?> GetByNameAsync(string name);
     }
 }
 

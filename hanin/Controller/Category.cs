@@ -13,29 +13,55 @@ namespace hanin.Controller
             public CategoryController(CategoryServiceInt service) => _service = service;
 
             [HttpGet]
-            public async Task<IActionResult> Get() => Ok(await _service.GetAllCategoriesAsync());
-
-            [HttpPost]
+        public async Task<IActionResult> Get()
+        {
+            var result = await _service.GetAllCategoriesAsync();
+            return Ok(result);
+        }
+        [HttpPost]
             public async Task<IActionResult> Post([FromBody] CategoryEntity category)
             {
-                await _service.CreateCategoryAsync(category);
-                return Ok(category);
+            var result = await _service.CreateCategoryAsync(category);
+
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+
+            return Ok(result);
+        
             }
 
             [HttpPut("{id}")]
             public async Task<IActionResult> Put(int id, [FromBody] CategoryEntity category)
             {
-                if (id != category.Id) return BadRequest();
-                await _service.UpdateCategoryAsync(category);
-                return NoContent();
+            if (id != category.Id)
+            {
+                return BadRequest(new ServiceResponse<CategoryEntity>
+                {
+                    Success = false,
+                    Message = "ID mismatch."
+                });
             }
+
+            var result = await _service.UpdateCategoryAsync(category);
+
+            if (!result.Success)
+            {
+                return result.Message.Contains("not found") ? NotFound(result) : BadRequest(result);
+            }
+
+            return Ok(result);
+        }
 
             [HttpDelete("{id}")]
             public async Task<IActionResult> Delete(int id)
             {
-                await _service.RemoveCategoryAsync(id);
-                return NoContent();
-            }
+            var result = await _service.RemoveCategoryAsync(id);
+            if (!result.Success) return NotFound(result);
+
+            return Ok(result);
+        }
         }
     }
 

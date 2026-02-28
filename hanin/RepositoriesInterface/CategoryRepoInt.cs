@@ -8,5 +8,6 @@ namespace hanin.RepositoriesInterface
         Task AddAsync(CategoryEntity entity);
         Task UpdateAsync(CategoryEntity entity);
         Task DeleteAsync(int id);
+        Task<CategoryEntity?> GetByNameAsync(string name);
     }
 }

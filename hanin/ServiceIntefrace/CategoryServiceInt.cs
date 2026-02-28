@@ -4,9 +4,9 @@ namespace hanin.ServiceIntefrace
 {
     public interface CategoryServiceInt
     {
-        Task<IEnumerable<CategoryEntity>> GetAllCategoriesAsync();
-        Task CreateCategoryAsync(CategoryEntity category);
-        Task UpdateCategoryAsync(CategoryEntity category);
-        Task RemoveCategoryAsync(int id);
+      Task<ServiceResponse<IEnumerable<CategoryEntity>>> GetAllCategoriesAsync();
+            Task<ServiceResponse<CategoryEntity>> CreateCategoryAsync(CategoryEntity category);
+         Task<ServiceResponse<CategoryEntity>> UpdateCategoryAsync(CategoryEntity category);
+        Task<ServiceResponse<bool>> RemoveCategoryAsync(int id);
     }
 }

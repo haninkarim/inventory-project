@@ -39,5 +39,14 @@ namespace hanin.Repositories
                 await _context.SaveChangesAsync();
             }
         }
+        public async Task<ProductEntity> GetByIdAsync(int id)
+        {
+            return await _context.ProductEntity.FindAsync(id);
+        }
+        public async Task<ProductEntity?> GetByNameAsync(string name)
+        {
+            return await _context.ProductEntity
+                .FirstOrDefaultAsync(x => x.Name.ToLower() == name.ToLower());
+        }
     }
 }

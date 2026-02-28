@@ -35,5 +35,10 @@ namespace hanin.Repositories
                 await _context.SaveChangesAsync();
             }
         }
+        public async Task<CategoryEntity?> GetByNameAsync(string name)
+        {
+            return await _context.Categories
+                .FirstOrDefaultAsync(x => x.Name.ToLower() == name.ToLower());
+        }
     }
 }

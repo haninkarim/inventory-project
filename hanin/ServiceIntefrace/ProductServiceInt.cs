@@ -4,10 +4,10 @@ namespace hanin.ServiceIntefrace
 {
     public interface ProductServiceInt
     {
-       // Task<IEnumerable<ProductServiceInt>> GetAvailableProductsAsync();
-        Task<IEnumerable<ProductEntity>> GetAvailableProductsAsync();
-        Task CreateProductAsync(ProductEntity product);
-        Task UpdateProductAsync(ProductEntity product);
-        Task RemoveProductAsync(int id);
+        Task<ServiceResponse<IEnumerable<ProductEntity>>> GetAllProductsAsync();
+        Task<ServiceResponse<ProductEntity>> CreateProductAsync(ProductEntity product);
+        Task<ServiceResponse<ProductEntity>> UpdateProductAsync(ProductEntity product);
+        Task<ServiceResponse<bool>> RemoveProductAsync(int id);
+        Task<ServiceResponse<ProductEntity>> GetProductByIdAsync(int id);
     }
 }
