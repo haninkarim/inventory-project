@@ -41,7 +41,9 @@ namespace hanin.Repositories
         }
         public async Task<ProductEntity> GetByIdAsync(int id)
         {
-            return await _context.ProductEntity.FindAsync(id);
+            return await _context.ProductEntity
+         .AsNoTracking()
+         .FirstOrDefaultAsync(x => x.Id == id);
         }
         public async Task<ProductEntity?> GetByNameAsync(string name)
         {

@@ -12,7 +12,12 @@ namespace hanin.Repositories
 
         public async Task<IEnumerable<CategoryEntity>> GetAllAsync() => await _context.Categories.ToListAsync();
 
-        public async Task<CategoryEntity> GetByIdAsync(int id) => await _context.Categories.FindAsync(id);
+        public async Task<CategoryEntity> GetByIdAsync(int id)
+        {
+            return await _context.Categories
+        .AsNoTracking()
+        .FirstOrDefaultAsync(x => x.Id == id);
+        }
 
         public async Task AddAsync(CategoryEntity entity)
         {
