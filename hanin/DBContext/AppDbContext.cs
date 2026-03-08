@@ -1,20 +1,26 @@
 ﻿using hanin.Controller;
 using hanin.Entities;
+using hanin.ServiceIntefrace;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace hanin.DBContext
 {
     public class AppDbContext : DbContext
     {
-        public AppDbContext()
+        private readonly ITenantService _tenantService;
+        // public AppDbContext(DbContextOptions options):base(options)
+        // {
+        // }
+        public AppDbContext(DbContextOptions<AppDbContext> options, ITenantService? tenantService = null)
+ : base(options)
         {
-        }
-        public AppDbContext(DbContextOptions<AppDbContext> options)
-        : base(options)
-        {
+            _tenantService = tenantService;
         }
         public DbSet<ProductEntity> ProductEntity { get; set; }
         public DbSet<CategoryEntity> Categories { get; set; }
+        public DbSet<EmployeeEntity> Employees { get; set; }
+        public DbSet<DepartmentEntity> Departments { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -37,7 +43,28 @@ namespace hanin.DBContext
                 .HasOne(p => p.Category)      
                 .WithMany(c => c.Products)   
                 .HasForeignKey(p => p.CategoryId)
-                .OnDelete(DeleteBehavior.Cascade); 
+                .OnDelete(DeleteBehavior.Cascade);
+            var currentTenantId = _tenantService?.GetTenantId();
+
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            {
+                if (typeof(EntityBase).IsAssignableFrom(entityType.ClrType))
+                {
+                    var parameter = Expression.Parameter(entityType.ClrType, "e");
+
+                    var filter = Expression.Lambda(
+                        Expression.Equal(
+                            Expression.Property(parameter, nameof(EntityBase.TenantId)),
+                            Expression.Constant(currentTenantId)
+                        ),
+                        parameter
+                    );
+
+                  
+                    modelBuilder.Entity(entityType.ClrType).HasQueryFilter(filter);
+                }
+            }
+        
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
